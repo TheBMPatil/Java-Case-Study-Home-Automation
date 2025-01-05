@@ -6,4 +6,8 @@ public interface DeviceOperatons {
     public int getCurrentStateTime();
 
     public boolean isOn();
+
+    public int getDeviceId();
+
+    public void specialOperations();
 }

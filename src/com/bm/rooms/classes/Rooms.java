@@ -1,9 +1,16 @@
 package com.bm.rooms.classes;
 
+import com.bm.devices.DeviceOperatons;
+
+import java.util.List;
+
 public abstract class Rooms {
     int roomID;
+    List<DeviceOperatons> devices;
 
-    public Rooms() {
+
+    public List<DeviceOperatons> getAllDevices() {
+        return this.devices;
     }
 
     public Rooms(int roomID) {

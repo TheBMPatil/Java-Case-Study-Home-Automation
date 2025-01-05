@@ -3,34 +3,49 @@ package com.bm.homeautomation;
 import java.util.Scanner;
 
 public class MainApp {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int password = 8408;
-        System.out.println("Shree Ganesh...! :>");
-        System.out.println("Get inside house...!");
-        System.out.println("Enter your Password : ");
-        int count = 0;
-        while (count != 3) {
-            int userPass = sc.nextInt();
-            if (password == userPass) {
-                System.out.println("Passwod validated");
 
+    public static void main(String[] args) {
+        final int PASSWORD = 8408;
+        final int MAX_ATTEMPTS = 3;
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("Shree Ganesh...! :>");
+        System.out.println("Welcome to Home Automation!");
+        System.out.print("Please enter your password: ");
+
+        int attempts = 0;
+
+        while (attempts < MAX_ATTEMPTS) {
+            int userPass = getValidIntegerInput(sc);
+
+            if (userPass == PASSWORD) {
+                System.out.println("Password validated. Access granted!");
                 HomeAutomation.startAutomation();
                 break;
-
             } else {
-                System.out.println("Invalid password..\nTry again.. re-try count : " + (count + 1));
-                count++;
+                attempts++;
+                if (attempts < MAX_ATTEMPTS) {
+                    System.out.println("Invalid password. Try again. Attempts remaining: " + (MAX_ATTEMPTS - attempts));
+                }
             }
         }
-        if (count == 3) {
-            System.out.println("Faild to login in 3 trails..!");
-        } else {
-            System.out.println("Good Bye...!");
+
+        if (attempts == MAX_ATTEMPTS) {
+            System.out.println("Failed to login after " + MAX_ATTEMPTS + " attempts. Access denied.");
         }
 
-
+        System.out.println("Goodbye...!");
     }
 
 
+    private static int getValidIntegerInput(Scanner sc) {
+        while (true) {
+            try {
+                return sc.nextInt();
+            } catch (Exception e) {
+                System.out.println("Invalid input. Please enter a valid number: ");
+                sc.next(); // Clear the invalid input from scanner buffer.
+            }
+        }
+    }
 }

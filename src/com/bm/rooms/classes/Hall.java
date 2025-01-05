@@ -1,27 +1,24 @@
 package com.bm.rooms.classes;
 
 import com.bm.devices.DeviceOperatons;
+import com.bm.rooms.interfaces.HallMIF;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Hall extends Rooms {
 
-    List<DeviceOperatons> devices = new ArrayList<>();
+    List<HallMIF> devices = new ArrayList<>();
 
     public Hall(int roomID) {
         super(roomID);
     }
 
-    public List getAllDevices() {
-        return this.devices;
-    }
-
-    public void addDevice(DeviceOperatons newDevice) {
+    public void addDevice(HallMIF newDevice) {
         this.devices.add(newDevice);
     }
 
-    public void removeDevice(DeviceOperatons oldDevice) {
+    public void removeDevice(HallMIF oldDevice) {
         devices.remove(oldDevice);
     }
 }
