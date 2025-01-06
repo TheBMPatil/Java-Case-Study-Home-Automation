@@ -20,8 +20,8 @@ public class DeviceManagement {
             displayMainMenu();
             choice = getUserInput("Enter your choice: ");
             switch (choice) {
-                case 1 -> addNewDevice(myHouse);
-                case 2 -> removeExistingDevice(myHouse);
+                case 1 -> addNewDevice(room);
+                case 2 -> removeExistingDevice(room);
                 case 3 -> handleDeviceOptions(room);
                 case 0 -> System.out.println("Exiting the program...");
                 default -> System.out.println("Invalid choice. Try again.");
@@ -121,11 +121,10 @@ public class DeviceManagement {
         System.out.println("0 : Exit");
     }
 
-    private static void addNewDevice(House myHouse) {
+    private static void addNewDevice(Rooms room) {
         System.out.println("Adding new Device");
 
-        // Fetch the room where the device will be added
-        Rooms room = getRoom(myHouse);
+
         if (room == null) {
             System.out.println("Room not found. Cannot add device.");
             return;
@@ -164,8 +163,40 @@ public class DeviceManagement {
     }
 
 
-    private static void removeExistingDevice(House myHouse) {
+    private static void removeExistingDevice(Rooms room) {
+        System.out.println("Removing an existing device");
 
+        if (room == null) {
+            System.out.println("Room not found. Cannot remove device.");
+            return;
+        }
+        List<DeviceOperatons> devices = room.getAllDevices();
+
+        if (devices.isEmpty()) {
+            System.out.println("No devices found in this room to remove.");
+            return;
+        }
+
+        System.out.println("Devices in the room:");
+        for (int i = 0; i < devices.size(); i++) {
+            System.out.println((i + 1) + ": " + devices.get(i).getClass().getSimpleName());
+        }
+
+        System.out.println("Enter the number of the device you want to remove (0 to cancel):");
+        int choice = sc.nextInt();
+
+        if (choice == 0) {
+            System.out.println("Device removal canceled.");
+            return;
+        }
+
+        if (choice < 1 || choice > devices.size()) {
+            System.out.println("Invalid choice. Please select a valid device number.");
+            return;
+        }
+
+        DeviceOperatons removedDevice = devices.remove(choice - 1);
+        System.out.println(removedDevice.getClass().getSimpleName() + " removed successfully.");
     }
 
 
