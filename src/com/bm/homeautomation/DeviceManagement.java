@@ -1,6 +1,8 @@
 package com.bm.homeautomation;
 
 import com.bm.devices.DeviceOperatons;
+import com.bm.devices.classes.TV;
+import com.bm.rooms.classes.Hall;
 import com.bm.rooms.classes.Rooms;
 
 import java.util.List;
@@ -120,10 +122,51 @@ public class DeviceManagement {
     }
 
     private static void addNewDevice(House myHouse) {
-//        HouseManagementUtility.addRoom(myHouse);
+        System.out.println("Adding new Device");
+
+        // Fetch the room where the device will be added
+        Rooms room = getRoom(myHouse);
+        if (room == null) {
+            System.out.println("Room not found. Cannot add device.");
+            return;
+        }
+
+        // Get the list of devices in the room
+        List<DeviceOperatons> devices = room.getAllDevices();
+        System.out.println(devices);
+        // Prompt user for the device type
+        System.out.println("Enter which device you want to add :");
+        System.out.println("1 : TV \t 2 : AC (To be implemented) \t 3 : Music Player (To be implemented) \n 0 : Cancel");
+        int deviceType = sc.nextInt();
+
+        switch (deviceType) {
+            case 1 -> {
+                // Add a TV device
+                System.out.println("Enter device ID");
+                int devId = sc.nextInt();
+                DeviceOperatons tv = new TV(devId); // Assuming TV is a class implementing DeviceOperatons
+                devices.add(tv);
+                System.out.println("TV added successfully.");
+            }
+            case 2, 3 -> {
+                // Placeholder for future implementation
+                System.out.println("This device type is not implemented yet. Please try again later.");
+            }
+            case 0 -> {
+                // Cancel operation
+                System.out.println("Device addition canceled.");
+            }
+            default -> {
+                // Invalid input handling
+                System.out.println("Invalid choice. Please select a valid device type.");
+            }
+        }
     }
+
 
     private static void removeExistingDevice(House myHouse) {
 
     }
+
+
 }

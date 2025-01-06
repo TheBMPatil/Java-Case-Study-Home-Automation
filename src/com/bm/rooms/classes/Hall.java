@@ -8,7 +8,7 @@ import java.util.List;
 
 public class Hall extends Rooms {
 
-    List<HallMIF> devices = new ArrayList<>();
+    List<HallMIF> devices = new ArrayList<HallMIF>();
 
     public Hall(int roomID) {
         super(roomID);
