@@ -1,0 +1,6 @@
+a. Kitchen
+b. Living area
+c. Dining area
+d. Bedroom
+e. WashRoom
+f. Corridors

@@ -2,12 +2,13 @@ package com.bm.devices.classes;
 
 import com.bm.devices.DeviceOperatons;
 import com.bm.rooms.interfaces.HallMIF;
+import com.bm.rooms.interfaces.LivingAreaMIF;
 
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.Scanner;
 
-public class TV extends Devices implements HallMIF {
+public class TV extends Devices implements HallMIF, LivingAreaMIF {
     static Scanner sc = new Scanner(System.in);
     private boolean onOffStatus = false;
     private LocalTime lastActivityTime;
