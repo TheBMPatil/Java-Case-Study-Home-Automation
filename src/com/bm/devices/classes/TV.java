@@ -1,6 +1,5 @@
 package com.bm.devices.classes;
 
-import com.bm.devices.DeviceOperatons;
 import com.bm.rooms.interfaces.HallMIF;
 import com.bm.rooms.interfaces.LivingAreaMIF;
 
