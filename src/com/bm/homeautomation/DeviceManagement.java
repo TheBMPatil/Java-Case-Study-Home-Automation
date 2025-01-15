@@ -1,6 +1,8 @@
 package com.bm.homeautomation;
 
 import com.bm.devices.DeviceOperatons;
+import com.bm.devices.classes.Fridge;
+import com.bm.devices.classes.MusicPlayer;
 import com.bm.devices.classes.TV;
 import com.bm.rooms.classes.Hall;
 import com.bm.rooms.classes.Rooms;
@@ -32,16 +34,17 @@ public class DeviceManagement {
     private static void handleDeviceOptions(Rooms room) {
         int innerChoice;
         do {
-            DeviceOperatons choosenDevice = getDevice(room);
-            if (choosenDevice == null) return;
+            DeviceOperatons chosenDevice = getDevice(room);
+            if (chosenDevice == null) return;
 
             displayDeviceMenu();
             innerChoice = getUserInput("Enter your choice: ");
             switch (innerChoice) {
-                case 1 -> System.out.println(choosenDevice.isOn() ? "Device is ON" : "Device is OFF");
-                case 2 -> System.out.println("Device is active for: " + choosenDevice.getCurrentStateTime() + " Mins.");
-                case 3 -> choosenDevice.deviceTurnOnOff();
-                case 4 -> choosenDevice.specialOperations();
+                case 1 -> System.out.println(chosenDevice.isOn() ? "Device is ON" : "Device is OFF");
+                case 2 ->
+                        System.out.println("Device is " + (chosenDevice.isOn() ? "ON" : "OFF") + " for: " + chosenDevice.getCurrentStateTime() + " Mins.");
+                case 3 -> chosenDevice.deviceTurnOnOff();
+                case 4 -> chosenDevice.specialOperations();
                 case 0 -> System.out.println("Exiting device menu...");
                 default -> System.out.println("Invalid choice. Try again.");
             }
@@ -57,7 +60,7 @@ public class DeviceManagement {
 
         System.out.println("Available Rooms:");
         for (Rooms room : rooms) {
-            System.out.println("Room ID: " + room.getRoomID());
+            System.out.println("Room ID: " + room.getRoomID() + "Room type  : " + room.getClass().getSimpleName());
         }
 
         int roomId = getUserInput("Enter Room ID to access devices: ");
@@ -80,7 +83,7 @@ public class DeviceManagement {
 
         System.out.println("Available Devices:");
         for (DeviceOperatons device : devices) {
-            System.out.println("Device ID: " + device.getDeviceId());
+            System.out.println("Device ID: " + device.getDeviceId() + "Device type  : " + device.getClass().getSimpleName());
         }
 
         int deviceId = getUserInput("Enter Device ID to access options: ");
@@ -124,7 +127,6 @@ public class DeviceManagement {
     private static void addNewDevice(Rooms room) {
         System.out.println("Adding new Device");
 
-
         if (room == null) {
             System.out.println("Room not found. Cannot add device.");
             return;
@@ -132,33 +134,38 @@ public class DeviceManagement {
 
         // Get the list of devices in the room
         List<DeviceOperatons> devices = room.getAllDevices();
-        System.out.println(devices);
+
         // Prompt user for the device type
-        System.out.println("Enter which device you want to add :");
-        System.out.println("1 : TV \t 2 : AC (To be implemented) \t 3 : Music Player (To be implemented) \n 0 : Cancel");
+        System.out.println("Enter which device you want to add:");
+        System.out.println("1 : TV \t 2 : Fridge \t 3 : Music Player \n 0 : Cancel");
         int deviceType = sc.nextInt();
 
-        switch (deviceType) {
-            case 1 -> {
-                // Add a TV device
-                System.out.println("Enter device ID");
-                int devId = sc.nextInt();
-                DeviceOperatons tv = new TV(devId); // Assuming TV is a class implementing DeviceOperatons
-                devices.add(tv);
-                System.out.println("TV added successfully.");
-            }
-            case 2, 3 -> {
-                // Placeholder for future implementation
-                System.out.println("This device type is not implemented yet. Please try again later.");
-            }
-            case 0 -> {
-                // Cancel operation
-                System.out.println("Device addition canceled.");
-            }
-            default -> {
-                // Invalid input handling
-                System.out.println("Invalid choice. Please select a valid device type.");
-            }
+        if (deviceType == 0) {
+            System.out.println("Device addition cancelled.");
+            return;
+        }
+
+        System.out.print("Enter device ID: ");
+        int devId = sc.nextInt();
+
+        // Check for duplicate device ID
+        if (devices.stream().anyMatch(device -> device.getDeviceId() == devId)) {
+            System.out.println("Device ID already exists. Please use a unique ID.");
+            return;
+        }
+
+        DeviceOperatons newDevice = switch (deviceType) {
+            case 1 -> new TV(devId); // Assuming TV is a class implementing DeviceOperations
+            case 2 -> new Fridge(devId);
+            case 3 -> new MusicPlayer(devId);
+            default -> null;
+        };
+
+        if (newDevice != null) {
+            devices.add(newDevice);
+            System.out.println(newDevice.getClass().getSimpleName() + " added successfully with ID " + devId + ".");
+        } else {
+            System.out.println("Invalid choice. Please select a valid device type.");
         }
     }
 

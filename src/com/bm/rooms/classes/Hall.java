@@ -17,7 +17,7 @@ public class Hall extends Rooms {
     public void addDevice(HallMIF newDevice) {
         this.devices.add(newDevice);
     }
-
+    
     public void removeDevice(HallMIF oldDevice) {
         devices.remove(oldDevice);
     }
