@@ -1,9 +1,7 @@
 package com.bm.homeautomation;
 
 import com.bm.devices.DeviceOperatons;
-import com.bm.devices.classes.Fridge;
-import com.bm.devices.classes.MusicPlayer;
-import com.bm.devices.classes.TV;
+import com.bm.devices.classes.*;
 import com.bm.rooms.classes.Rooms;
 
 import java.util.List;
@@ -35,7 +33,7 @@ public class DeviceManagement {
         do {
             DeviceOperatons chosenDevice = getDevice(room);
             if (chosenDevice == null) return;
-
+            System.out.println("Device name : " + chosenDevice.getClass().getSimpleName());
             displayDeviceMenu();
             innerChoice = getUserInput("Enter your choice: ");
             switch (innerChoice) {
@@ -59,7 +57,7 @@ public class DeviceManagement {
 
         System.out.println("Available Rooms:");
         for (Rooms room : rooms) {
-            System.out.println("Room ID: " + room.getRoomID() + "Room type  : " + room.getClass().getSimpleName());
+            System.out.println("Room ID: " + room.getRoomID() + "  Room type  : " + room.getClass().getSimpleName());
         }
 
         int roomId = getUserInput("Enter Room ID to access devices: ");
@@ -82,7 +80,7 @@ public class DeviceManagement {
 
         System.out.println("Available Devices:");
         for (DeviceOperatons device : devices) {
-            System.out.println("Device ID: " + device.getDeviceId() + "Device type  : " + device.getClass().getSimpleName());
+            System.out.println("Device ID: " + device.getDeviceId() + "  Device type  : " + device.getClass().getSimpleName());
         }
 
         int deviceId = getUserInput("Enter Device ID to access options: ");
@@ -116,56 +114,12 @@ public class DeviceManagement {
     }
 
     private static void displayDeviceMenu() {
+
         System.out.println("1 : Check Device status");
         System.out.println("2 : Check Device Active time");
         System.out.println("3 : Check Device Status and turn it ON or OFF");
         System.out.println("4 : Special Options");
         System.out.println("0 : Exit");
-    }
-
-    private static void addNewDevice(Rooms room) {
-        System.out.println("Adding new Device");
-
-        if (room == null) {
-            System.out.println("Room not found. Cannot add device.");
-            return;
-        }
-
-        // Get the list of devices in the room
-        List<DeviceOperatons> devices = room.getAllDevices();
-
-        // Prompt user for the device type
-        System.out.println("Enter which device you want to add:");
-        System.out.println("1 : TV \t 2 : Fridge \t 3 : Music Player \n 0 : Cancel");
-        int deviceType = sc.nextInt();
-
-        if (deviceType == 0) {
-            System.out.println("Device addition cancelled.");
-            return;
-        }
-
-        System.out.print("Enter device ID: ");
-        int devId = sc.nextInt();
-
-        // Check for duplicate device ID
-        if (devices.stream().anyMatch(device -> device.getDeviceId() == devId)) {
-            System.out.println("Device ID already exists. Please use a unique ID.");
-            return;
-        }
-
-        DeviceOperatons newDevice = switch (deviceType) {
-            case 1 -> new TV(devId); // Assuming TV is a class implementing DeviceOperations
-            case 2 -> new Fridge(devId);
-            case 3 -> new MusicPlayer(devId);
-            default -> null;
-        };
-
-        if (newDevice != null) {
-            devices.add(newDevice);
-            System.out.println(newDevice.getClass().getSimpleName() + " added successfully with ID " + devId + ".");
-        } else {
-            System.out.println("Invalid choice. Please select a valid device type.");
-        }
     }
 
 
@@ -205,5 +159,59 @@ public class DeviceManagement {
         System.out.println(removedDevice.getClass().getSimpleName() + " removed successfully.");
     }
 
+    private static void addNewDevice(Rooms room) {
+        System.out.println("Adding new Device");
+
+        if (room == null) {
+            System.out.println("Room not found. Cannot add device.");
+            return;
+        }
+
+
+        List<DeviceOperatons> devices = room.getAllDevices();
+
+
+        System.out.println("Enter which device you want to add:");
+        System.out.println("1 : AC \t 2 : Fridge \t 3 : Induction");
+        System.out.println("4 : Light \t 5 : Music Player \t 6 : Oven");
+        System.out.println("7 : Showers \t 8 : TV \t 9 : Washing Machine");
+        System.out.println("0 : Cancel");
+        int deviceType = sc.nextInt();
+
+        if (deviceType == 0) {
+            System.out.println("Device addition cancelled.");
+            return;
+        }
+
+        System.out.print("Enter device ID: ");
+        int devId = sc.nextInt();
+
+
+        if (devices.stream().anyMatch(device -> device.getDeviceId() == devId)) {
+            System.out.println("Device ID already exists. Please use a unique ID.");
+            return;
+        }
+
+
+        DeviceOperatons newDevice = switch (deviceType) {
+            case 1 -> new AC(devId);
+            case 2 -> new Fridge(devId);
+            case 3 -> new Induction(devId);
+            case 4 -> new Light(devId);
+            case 5 -> new MusicPlayer(devId);
+            case 6 -> new Oven(devId);
+            case 7 -> new Showers(devId);
+            case 8 -> new TV(devId);
+            case 9 -> new WashingMachine(devId);
+            default -> null;
+        };
+
+        if (newDevice != null) {
+            devices.add(newDevice);
+            System.out.println(newDevice.getClass().getSimpleName() + " added successfully with ID " + devId + ".");
+        } else {
+            System.out.println("Invalid choice. Please select a valid device type.");
+        }
+    }
 
 }
