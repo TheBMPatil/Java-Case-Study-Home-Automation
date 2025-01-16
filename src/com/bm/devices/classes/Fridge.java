@@ -2,25 +2,28 @@ package com.bm.devices.classes;
 
 import com.bm.devices.interfaces.TemperatureControlDevices;
 
-import java.time.Duration;
-import java.time.LocalTime;
 import java.util.Scanner;
 
 public class Fridge extends Devices implements TemperatureControlDevices {
     private double temperature;
+    private String currentMode;
     private static final Scanner sc = new Scanner(System.in);
+
+
+    private static final String[] MODES = {"Fridge Mode", "Freezer Mode", "Power Freeze Mode", "Power Cool Mode", "Vacation Mode", "Eco Mode"};
+    private static final double[] MODE_TEMPERATURES = {5.0, -18.0, -25.0, 2.0, 10.0, 7.0};
 
     public Fridge(int deviceId) {
         super(deviceId);
-        this.temperature = 5.0; // Default temperature
+        this.temperature = MODE_TEMPERATURES[0];
+        this.currentMode = MODES[0];
         this.onOffStatus = false;
-        this.lastActivityTime = LocalTime.now();
     }
 
     @Override
     public void increaseTemperature() {
         System.out.println("Current temperature: " + temperature + "°C");
-        if (temperature < 10.0) { // Assume max temperature is 10°C
+        if (temperature < 10.0) {
             temperature++;
             System.out.println("Temperature increased to: " + temperature + "°C");
         } else {
@@ -31,7 +34,7 @@ public class Fridge extends Devices implements TemperatureControlDevices {
     @Override
     public void decreaseTemperature() {
         System.out.println("Current temperature: " + temperature + "°C");
-        if (temperature > -10.0) { // Assume min temperature is -10°C
+        if (temperature > -25.0) {
             temperature--;
             System.out.println("Temperature decreased to: " + temperature + "°C");
         } else {
@@ -40,76 +43,58 @@ public class Fridge extends Devices implements TemperatureControlDevices {
     }
 
     @Override
-    public void deviceTurnOnOff() {
-        if (onOffStatus) {
-            System.out.println("Fridge is ON for: " + getCurrentStateTime() + " minutes.");
-            if (getUserChoice("turn it OFF") == 1) {
-                turnOffDevice();
-            }
+    public void changeMode() {
+        System.out.println("Available Modes:");
+        for (int i = 0; i < MODES.length; i++) {
+            System.out.println((i + 1) + ". " + MODES[i]);
+        }
+
+        System.out.println("Enter the mode number to select:");
+        if (!sc.hasNextInt()) {
+            System.out.println("Invalid input. Exiting mode change...");
+            sc.next(); // Clear invalid input
+            return;
+        }
+
+        int mode = sc.nextInt();
+        if (mode >= 1 && mode <= MODES.length) {
+            setMode(mode - 1); // Index is mode - 1
         } else {
-            System.out.println("Fridge is OFF for: " + getCurrentStateTime() + " minutes.");
-            if (getUserChoice("turn it ON") == 1) {
-                turnOnDevice();
-            }
+            System.out.println("Invalid mode selection. Please try again.");
         }
     }
 
-    private int getUserChoice(String action) {
-        System.out.println("Do you want to " + action + "? (Yes 1 / No 2)");
-        int choice = sc.nextInt();
-        while (choice != 1 && choice != 2) {
-            System.out.println("Invalid choice. Please enter 1 for Yes or 2 for No.");
-            choice = sc.nextInt();
-        }
-        return choice;
-    }
-
-    private void turnOffDevice() {
-        onOffStatus = false;
-        lastActivityTime = LocalTime.now();
-        System.out.println("Fridge turned off.");
-    }
-
-    private void turnOnDevice() {
-        onOffStatus = true;
-        lastActivityTime = LocalTime.now();
-        System.out.println("Fridge turned on.");
-    }
-
-    @Override
-    public int getCurrentStateTime() {
-        if (lastActivityTime != null) {
-            Duration duration = Duration.between(lastActivityTime, LocalTime.now());
-            return (int) duration.toMinutes();
-        } else {
-            return 0;
-        }
-    }
-
-    @Override
-    public boolean isOn() {
-        return onOffStatus;
-    }
-
-    @Override
-    public int getDeviceId() {
-        return deviceId;
+    private void setMode(int modeIndex) {
+        this.currentMode = MODES[modeIndex];
+        this.temperature = MODE_TEMPERATURES[modeIndex];
+        System.out.println("Mode changed to: " + currentMode);
+        System.out.println("Temperature set to: " + temperature + "°C");
     }
 
     @Override
     public void specialOperations() {
-        int choice;
+        int choice = 0;
         do {
-            System.out.println("Special operations for the fridge:");
-            System.out.println("1) Increase temperature");
-            System.out.println("2) Decrease temperature");
-            System.out.println("0) Exit");
+            System.out.println("\nSpecial Operations for the Fridge:");
+            System.out.println("1. Increase Temperature");
+            System.out.println("2. Decrease Temperature");
+            System.out.println("3. Change Mode");
+            System.out.println("0. Exit Special Operations");
+
+            System.out.println("Enter your choice:");
+            if (!sc.hasNextInt()) {
+                System.out.println("Invalid input. Please enter a valid option.");
+                sc.next();
+                continue;
+            }
+
             choice = sc.nextInt();
             switch (choice) {
                 case 1 -> increaseTemperature();
                 case 2 -> decreaseTemperature();
-                case 0 -> System.out.println("Exiting special operations.");
-                default -> System.out.println("Invalid choice! Please select again.");
+                case 3 -> changeMode();
+                case 0 -> System.out.println("Exiting special operations...");
+                default -> System.out.println("Invalid choice. Please try again.");
             }
         } while (choice != 0);
     }

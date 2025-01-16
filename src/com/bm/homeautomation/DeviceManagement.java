@@ -4,7 +4,6 @@ import com.bm.devices.DeviceOperatons;
 import com.bm.devices.classes.Fridge;
 import com.bm.devices.classes.MusicPlayer;
 import com.bm.devices.classes.TV;
-import com.bm.rooms.classes.Hall;
 import com.bm.rooms.classes.Rooms;
 
 import java.util.List;

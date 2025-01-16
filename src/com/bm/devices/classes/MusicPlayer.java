@@ -6,11 +6,13 @@ import com.bm.rooms.interfaces.CorridorsMIF;
 import com.bm.rooms.interfaces.HallMIF;
 import com.bm.rooms.interfaces.LivingAreaMIF;
 
-import java.time.Duration;
 import java.time.LocalTime;
 import java.util.Scanner;
 
 public class MusicPlayer extends Devices implements EntertainmentDevices, HallMIF, LivingAreaMIF, BedRoomMIF, CorridorsMIF {
+    private static final int MAX_VOLUME = 100;
+    private static final int MIN_VOLUME = 0;
+
     private int volume;
     private String mode;
     private static final Scanner sc = new Scanner(System.in);
@@ -24,63 +26,6 @@ public class MusicPlayer extends Devices implements EntertainmentDevices, HallMI
     }
 
     @Override
-    public void deviceTurnOnOff() {
-        if (onOffStatus) {
-            System.out.println("Music Player is ON for: " + getCurrentStateTime() + " minutes.");
-            if (getUserChoice("turn it OFF") == 1) {
-                turnOffDevice();
-            }
-        } else {
-            System.out.println("Music Player is OFF for: " + getCurrentStateTime() + " minutes.");
-            if (getUserChoice("turn it ON") == 1) {
-                turnOnDevice();
-            }
-        }
-    }
-
-    private int getUserChoice(String action) {
-        System.out.println("Do you want to " + action + "? (Yes 1 / No 2)");
-        int choice = sc.nextInt();
-        while (choice != 1 && choice != 2) {
-            System.out.println("Invalid choice. Please enter 1 for Yes or 2 for No.");
-            choice = sc.nextInt();
-        }
-        return choice;
-    }
-
-    private void turnOffDevice() {
-        onOffStatus = false;
-        lastActivityTime = LocalTime.now();
-        System.out.println("Music Player turned off.");
-    }
-
-    private void turnOnDevice() {
-        onOffStatus = true;
-        lastActivityTime = LocalTime.now();
-        System.out.println("Music Player turned on.");
-    }
-
-    @Override
-    public int getCurrentStateTime() {
-        if (lastActivityTime != null) {
-            Duration duration = Duration.between(lastActivityTime, LocalTime.now());
-            return (int) duration.toMinutes();
-        } else {
-            return 0;
-        }
-    }
-
-    @Override
-    public boolean isOn() {
-        return onOffStatus;
-    }
-
-    @Override
-    public int getDeviceId() {
-        return deviceId;
-    }
-
-    @Override
     public void specialOperations() {
         int choice;
         do {
@@ -88,12 +33,14 @@ public class MusicPlayer extends Devices implements EntertainmentDevices, HallMI
             System.out.println("1) Increase volume");
             System.out.println("2) Decrease volume");
             System.out.println("3) Change mode");
+            System.out.println("4) Display current status");
             System.out.println("0) Exit");
-            choice = sc.nextInt();
+            choice = getIntInput();
             switch (choice) {
                 case 1 -> increaseVolume();
                 case 2 -> decreaseVolume();
                 case 3 -> changeMode();
+                case 4 -> displayStatus();
                 case 0 -> System.out.println("Exiting special operations.");
                 default -> System.out.println("Invalid choice! Please select again.");
             }
@@ -103,7 +50,7 @@ public class MusicPlayer extends Devices implements EntertainmentDevices, HallMI
     @Override
     public void increaseVolume() {
         System.out.println("Current Volume: " + volume);
-        if (volume < 100) { // Maximum volume
+        if (volume < MAX_VOLUME) {
             volume++;
             System.out.println("Volume increased to: " + volume);
         } else {
@@ -114,7 +61,7 @@ public class MusicPlayer extends Devices implements EntertainmentDevices, HallMI
     @Override
     public void decreaseVolume() {
         System.out.println("Current Volume: " + volume);
-        if (volume > 0) { // Minimum volume
+        if (volume > MIN_VOLUME) {
             volume--;
             System.out.println("Volume decreased to: " + volume);
         } else {
@@ -133,7 +80,7 @@ public class MusicPlayer extends Devices implements EntertainmentDevices, HallMI
             System.out.println("3) Treble Boost");
             System.out.println("4) Surround");
             System.out.println("0) Cancel");
-            choice = sc.nextInt();
+            choice = getIntInput();
             switch (choice) {
                 case 1 -> mode = "Normal";
                 case 2 -> mode = "Bass Boost";
@@ -144,5 +91,12 @@ public class MusicPlayer extends Devices implements EntertainmentDevices, HallMI
             }
         } while (choice != 0);
         System.out.println("Mode set to: " + mode);
+    }
+
+    private void displayStatus() {
+        System.out.println("Music Player Status:");
+        System.out.println("- Power: " + (onOffStatus ? "On" : "Off"));
+        System.out.println("- Volume: " + volume);
+        System.out.println("- Mode: " + mode);
     }
 }

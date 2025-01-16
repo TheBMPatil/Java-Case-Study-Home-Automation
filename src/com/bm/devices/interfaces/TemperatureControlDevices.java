@@ -4,4 +4,6 @@ public interface TemperatureControlDevices {
     public void increaseTemperature();
 
     public void decreaseTemperature();
+
+    public void changeMode();
 }
